@@ -21,21 +21,37 @@ provider "docker" {
 }
 
 
-# build docker image
-resource "docker_image" "bedrockrag-image" {
-  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:latest"
+# build docker image for Graviton (ARM64)
+resource "docker_image" "bedrockrag-image-arm64" {
+  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:arm64-latest"
+  platform = "linux/arm64"
+  build {
+    context = "../bedrockrag"
+    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:arm64-latest"]
+    platform = "linux/arm64"
+    no_cache = true
+  }
+}
+
+# build docker image for AMD64
+resource "docker_image" "bedrockrag-image-amd64" {
+  name = "${aws_ecr_repository.bedrockragrepo.repository_url}:amd64-latest"
   platform = "linux/amd64"
   build {
     context = "../bedrockrag"
-    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:latest"]
+    tag = ["${aws_ecr_repository.bedrockragrepo.repository_url}:amd64-latest"]
     platform = "linux/amd64"
     no_cache = true
   }
 }
 
-# push image to ecr repo
-resource "docker_registry_image" "push-bedrockrag-image" {
-  name = docker_image.bedrockrag-image.name
+# push images to ecr repo
+resource "docker_registry_image" "push-bedrockrag-image-arm64" {
+  name = docker_image.bedrockrag-image-arm64.name
+}
+
+resource "docker_registry_image" "push-bedrockrag-image-amd64" {
+  name = docker_image.bedrockrag-image-amd64.name
 }
 
 
