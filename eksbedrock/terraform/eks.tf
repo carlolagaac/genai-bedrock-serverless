@@ -12,47 +12,22 @@ module "eks" {
 
   enable_irsa = true
 
-  eks_managed_node_group_defaults = {
-    disk_size = 50
-    ebs_optimized = true
-    # Attach BedrockFullAccess to all node group roles
-    iam_role_additional_policies = {
-      AmazonBedrockFullAccess = "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
-    }
+  # Add required policies for Karpenter
+  iam_role_additional_policies = {
+    AmazonBedrockFullAccess = "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
   }
 
+  # Add a small managed node group to run Karpenter
   eks_managed_node_groups = {
-    general = {
-      desired_size = 1
-      min_size     = 1
-      max_size     = 10
-
-      labels = {
-        role = "general"
-      }
-
+    karpenter = {
       instance_types = ["t3.small"]
-      capacity_type  = "ON_DEMAND"
-    }
-
-    spot = {
-      desired_size = 1
       min_size     = 1
-      max_size     = 10
+      max_size     = 2
+      desired_size = 1
 
       labels = {
-        role = "spot"
+        role = "karpenter"
       }
-
-      taints = [{
-        key    = "market"
-        value  = "spot"
-        effect = "NO_SCHEDULE"
-      }]
-
-      instance_types = ["t3.micro"]
-      capacity_type  = "SPOT"
     }
   }
 }
-
