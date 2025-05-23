@@ -56,20 +56,21 @@ metadata:
   name: default
 spec:
   requirements:
+    - key: kubernetes.io/arch
+      operator: In
+      values: ["amd64", "arm64"]
     - key: karpenter.sh/capacity-type
       operator: In
       values: ["spot", "on-demand"]
-    - key: kubernetes.io/arch
-      operator: In
-      values: ["amd64"]
+  consolidation:
+    enabled: true
   limits:
     resources:
-      cpu: 100
-      memory: 100Gi
+      cpu: 1000
+      memory: 1000Gi
   providerRef:
     name: default
-  ttlSecondsAfterEmpty: 30
-  ttlSecondsUntilExpired: 2592000 # 30 days
+  ttlSecondsUntilExpired: 2592000
   YAML
 
   depends_on = [
@@ -92,6 +93,19 @@ spec:
   instanceProfile: "${module.karpenter.instance_profile_name}"
   tags:
     karpenter.sh/discovery: "${module.eks.cluster_name}"
+  capacityType: SPOT
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 20Gi
+        volumeType: gp3
+  instanceTypes:
+    - t3.large
+    - t3.xlarge
+    - t3.2xlarge
+    - t4g.large
+    - t4g.xlarge
+    - t4g.2xlarge
   YAML
 
   depends_on = [
