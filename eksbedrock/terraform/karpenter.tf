@@ -13,9 +13,9 @@ resource "helm_release" "karpenter" {
   create_namespace = true
 
   name       = "karpenter"
-  repository = "oci://public.ecr.aws/karpenter"
+  repository = "oci://public.ecr.aws/karpenter/"
   chart      = "karpenter"
-  version    = "v0.32.1"
+  version    = "v1.4.0"
 
   set {
     name  = "settings.aws.clusterName"
@@ -50,7 +50,7 @@ resource "helm_release" "karpenter" {
 # Create a default Karpenter Provisioner
 resource "kubectl_manifest" "karpenter_provisioner" {
   yaml_body = <<-YAML
-apiVersion: karpenter.sh/v1alpha5
+apiVersion: karpenter.sh/v1
 kind: Provisioner
 metadata:
   name: default
@@ -66,8 +66,8 @@ spec:
     enabled: true
   limits:
     resources:
-      cpu: 1000
-      memory: 1000Gi
+      cpu: 1
+      memory: 1Gi
   providerRef:
     name: default
   ttlSecondsUntilExpired: 2592000
@@ -81,7 +81,7 @@ spec:
 # Create a default Karpenter NodePool
 resource "kubectl_manifest" "karpenter_node_pool" {
   yaml_body = <<-YAML
-apiVersion: karpenter.k8s.aws/v1alpha1
+apiVersion: karpenter.k8s.aws/v1
 kind: AWSNodeTemplate
 metadata:
   name: default
