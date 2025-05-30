@@ -23,3 +23,19 @@ output "aws_load_balancer_controller_role_name" {
   value       = module.aws_load_balancer_controller_irsa_role.iam_role_name
 }
 
+output "cluster_endpoint" {
+  description = "The endpoint for the EKS cluster"
+  value       = module.eks.cluster_endpoint
+}
+
+output "karpenter_iam_role_arn" {
+  description = "The IAM Role ARN for Karpenter"
+  value       = aws_iam_role.karpenter_controller.arn
+}
+
+output "cluster_name" {
+  description = "The name of the EKS cluster"
+  value       = module.eks.cluster_name
+}
+
+

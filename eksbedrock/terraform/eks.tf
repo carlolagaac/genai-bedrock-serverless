@@ -12,6 +12,13 @@ module "eks" {
 
   enable_irsa = true
   
+  # Enable EKS Pod Identity Agent add-on
+  cluster_addons = {
+    eks-pod-identity-agent = {
+      most_recent = true
+    }
+  }
+  
   tags = local.tags
 
   eks_managed_node_group_defaults = {
@@ -33,7 +40,7 @@ module "eks" {
         role = "general"
       }
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.medium"]
       capacity_type  = "ON_DEMAND"
     }
 
