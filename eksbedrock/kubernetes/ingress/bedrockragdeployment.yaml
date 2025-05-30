@@ -15,6 +15,11 @@ spec:
     spec:
       imagePullSecrets:
         - name: ecr-secret
+      tolerations:
+        - key: "market"
+          operator: "Equal"
+          value: "spot"
+          effect: "NoSchedule"
       containers:
         - name: bedrockrag
           image: 555497120808.dkr.ecr.us-east-1.amazonaws.com/bedrockragrepo:latest
