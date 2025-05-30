@@ -17,7 +17,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: bedrockrag
-          image: <your-accound-id>.dkr.ecr.us-east-1.amazonaws.com/bedrockragrepo:latest
+          image: 555497120808.dkr.ecr.us-east-1.amazonaws.com/bedrockragrepo:latest
           ports:
             - name: http
               containerPort: 8080

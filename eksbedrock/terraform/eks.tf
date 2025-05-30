@@ -11,6 +11,8 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   enable_irsa = true
+  
+  tags = local.tags
 
   eks_managed_node_group_defaults = {
     disk_size = 50

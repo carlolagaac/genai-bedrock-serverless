@@ -7,6 +7,8 @@ resource "aws_ecr_repository" "bedrockragrepo" {
   image_scanning_configuration {
     scan_on_push = true
   }
+  
+  tags = local.tags
 }
 
 data "aws_ecr_authorization_token" "token" {}

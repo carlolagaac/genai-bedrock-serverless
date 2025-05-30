@@ -1,11 +1,4 @@
 
-locals {
-  tags = {
-    project = "eksbedrock"
-    owner       = "aws"
-  }
-}
-
 data "aws_availability_zones" "available" {
   state = "available"
 
@@ -35,12 +28,19 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  public_subnet_tags = {
-     "kubernetes.io/role/elb" = 1
-  }
+  tags = local.tags
 
- private_subnet_tags = {
-     "kubernetes.io/role/internal-elb" = 1
- }
+  public_subnet_tags = merge(
+    {
+      "kubernetes.io/role/elb" = 1
+    },
+    local.tags
+  )
 
+  private_subnet_tags = merge(
+    {
+      "kubernetes.io/role/internal-elb" = 1
+    },
+    local.tags
+  )
 }
