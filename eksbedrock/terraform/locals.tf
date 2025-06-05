@@ -1,10 +1,10 @@
 locals {
   env         = "staging"
-  eks_name    = "eksbedrock"
+  eks_name    = var.cluster_name
   eks_version = "1.31"
   
   tags = {
-    project = "eksbedrock"
+    project = var.cluster_name
     owner   = "aws"
   }
 }

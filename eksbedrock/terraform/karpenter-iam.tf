@@ -1,11 +1,10 @@
 locals {
   karpenter_namespace = "kube-system"
-  cluster_name        = "eksbedrock"
 }
 
 # IAM Role for Karpenter Controller
 resource "aws_iam_role" "karpenter_controller" {
-  name = "${local.cluster_name}-karpenter"
+  name = "${var.cluster_name}-karpenter"
   
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -29,7 +28,7 @@ resource "aws_iam_role" "karpenter_controller" {
 
 # IAM Policy for Karpenter Controller
 resource "aws_iam_policy" "karpenter_controller" {
-  name        = "KarpenterControllerPolicy-${local.cluster_name}"
+  name        = "KarpenterControllerPolicy-${var.cluster_name}"
   description = "Policy for Karpenter Controller"
   
   policy = jsonencode({
@@ -61,7 +60,7 @@ resource "aws_iam_policy" "karpenter_controller" {
         Action = [
           "iam:PassRole"
         ]
-        Resource = "arn:aws:iam::*:role/KarpenterNodeRole-${local.cluster_name}"
+        Resource = "arn:aws:iam::*:role/KarpenterNodeRole-${var.cluster_name}"
       }
     ]
   })
@@ -75,7 +74,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_controller_policy" {
 
 # IAM Role for Karpenter Nodes
 resource "aws_iam_role" "karpenter_node" {
-  name = "KarpenterNodeRole-${local.cluster_name}"
+  name = "KarpenterNodeRole-${var.cluster_name}"
   
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -120,7 +119,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_node_bedrock" {
 
 # Create instance profile for Karpenter nodes
 resource "aws_iam_instance_profile" "karpenter_node" {
-  name = "KarpenterNodeInstanceProfile-${local.cluster_name}"
+  name = "KarpenterNodeInstanceProfile-${var.cluster_name}"
   role = aws_iam_role.karpenter_node.name
 }
 
